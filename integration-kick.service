@@ -1,0 +1,21 @@
+# systemd unit — copy to /etc/systemd/system/integration-kick.service,
+# put the secrets into /etc/integration-kick.env (chmod 600):
+#   LH_INGEST_URL=https://dock.at-harbor.com/v1/ingest/123
+#   LH_INGEST_SECRET=…
+#   KICK_CLIENT_ID=…
+#   KICK_CLIENT_SECRET=…
+[Unit]
+Description=LinkHarbor Kick agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/integration-kick.env
+ExecStart=/usr/bin/python3 /opt/integration-kick/agent.py --channel mychannel --name "My Channel"
+Restart=always
+RestartSec=10
+User=nobody
+
+[Install]
+WantedBy=multi-user.target
